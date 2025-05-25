@@ -83,7 +83,7 @@ public static class ServiceConfig
             {
                 // var accessToken = context.Request.Query["access_token"];
                 // Console.WriteLine(accessToken);
-                // Console.WriteLine(context.Token);
+                Console.WriteLine(context.Token);
                 //
                 // var path = context.HttpContext.Request.Path;
                 // if (string.IsNullOrEmpty(accessToken) || path.Value == null || !path.Value.Contains("/hubs/location"))
