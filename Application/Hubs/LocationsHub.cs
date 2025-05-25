@@ -25,7 +25,7 @@ public class LocationsHub : Hub
     // Disconnect from the hub
     public override async Task OnDisconnectedAsync(Exception? exception)
     {
-        // Console.WriteLine("Disconnected connection");
+        Console.WriteLine("Disconnected connection");
         // var username = Context.User?.Identity?.Name;
         // if (username != null)
         // {

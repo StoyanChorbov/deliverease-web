@@ -53,7 +53,8 @@ public class Program
                 policyBuilder
                     .WithOrigins(
                         "http://localhost",
-                        "https://schorbov.eu"
+                        "https://schorbov.eu",
+                        "https://gourav-d.github.io"
                     )
                     .AllowAnyMethod()
                     .AllowAnyHeader()
@@ -75,6 +76,8 @@ public class Program
 
         var app = builder.Build();
 
+        app.UseCors("CorsPolicy");
+
         // Add roles to database
         await SeedDatabase(app.Services);
 
@@ -84,8 +87,6 @@ public class Program
             app.UseSwagger();
             app.UseSwaggerUI();
         }
-
-        app.UseCors("CorsPolicy");
 
         app.UseAuthentication();
         app.UseAuthorization();
