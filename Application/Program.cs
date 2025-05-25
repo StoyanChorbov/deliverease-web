@@ -75,6 +75,7 @@ public class Program
         app.UseAuthentication();
         app.UseAuthorization();
 
+        Console.WriteLine("Wut");
         app.MapHub<LocationsHub>("/hubs/locations");
 
         app.MapControllers();
