@@ -36,15 +36,6 @@ public class Program
             .AddEntityFrameworkStores<DelivereaseDbContext>()
             .AddDefaultTokenProviders();
 
-        // Add repositories and services
-        builder.Services
-            .AddRepositoryConfig()
-            .AddServiceConfig();
-
-        // Add auth
-        builder.Services.AddAuthenticationConfig(builder.Configuration);
-        builder.Services.AddAuthorization();
-
         // Add CORS policy
         builder.Services.AddCors(options =>
         {
@@ -56,11 +47,20 @@ public class Program
                         "https://schorbov.eu",
                         "https://gourav-d.github.io"
                     )
-                    .AllowAnyMethod()
                     .AllowAnyHeader()
+                    .AllowAnyMethod()
                     .AllowCredentials();
             });
         });
+
+        // Add repositories and services
+        builder.Services
+            .AddRepositoryConfig()
+            .AddServiceConfig();
+
+        // Add auth
+        builder.Services.AddAuthenticationConfig(builder.Configuration);
+        builder.Services.AddAuthorization();
 
         // Add real-time communication
         builder.Services.AddSignalR();
