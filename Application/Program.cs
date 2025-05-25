@@ -45,6 +45,22 @@ public class Program
         builder.Services.AddAuthenticationConfig(builder.Configuration);
         builder.Services.AddAuthorization();
 
+        // Add CORS policy
+        builder.Services.AddCors(options =>
+        {
+            options.AddPolicy("CorsPolicy", policyBuilder =>
+            {
+                policyBuilder
+                    .WithOrigins(
+                        "http://localhost",
+                        "https://schorbov.eu"
+                    )
+                    .AllowAnyMethod()
+                    .AllowAnyHeader()
+                    .AllowCredentials();
+            });
+        });
+
         // Add real-time communication
         builder.Services.AddSignalR();
 
@@ -55,10 +71,7 @@ public class Program
         builder.Services.AddSwaggerGen();
 
         // Limit to http only
-        builder.WebHost.ConfigureKestrel(options =>
-        {
-            options.ListenAnyIP(5000);
-        });
+        builder.WebHost.ConfigureKestrel(options => { options.ListenAnyIP(5000); });
 
         var app = builder.Build();
 
@@ -72,16 +85,14 @@ public class Program
             app.UseSwaggerUI();
         }
 
+        app.UseCors("CorsPolicy");
+
         app.UseAuthentication();
         app.UseAuthorization();
-
-        Console.WriteLine("Wut");
-        Console.WriteLine("Bruh");
+        
         app.MapHub<LocationsHub>("/hubs/locations");
 
         app.MapControllers();
-
-        app.UseCors(policyBuilder => policyBuilder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 
         await app.RunAsync();
     }
@@ -93,10 +104,10 @@ public class Program
         var context = scope.ServiceProvider.GetRequiredService<DelivereaseDbContext>();
         var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole<Guid>>>();
         await context.Database.MigrateAsync();
-        
+
         if (await context.Roles.AnyAsync())
             return;
-        
+
         await roleManager.CreateAsync(new IdentityRole<Guid>(UserRoles.User));
         await roleManager.CreateAsync(new IdentityRole<Guid>(UserRoles.Admin));
         await context.SaveChangesAsync();
