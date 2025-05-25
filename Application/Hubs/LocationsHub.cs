@@ -26,24 +26,23 @@ public class LocationsHub : Hub
     public override async Task OnDisconnectedAsync(Exception? exception)
     {
         Console.WriteLine("Disconnected connection");
-        // var username = Context.User?.Identity?.Name;
-        // if (username != null)
-        // {
-        //     Connections.TryRemove(Context.ConnectionId, out _);
-        // }
-        // Console.WriteLine("Disconnected user: " + username);
+        var username = Context.User?.Identity?.Name;
+        if (username != null)
+        {
+            Connections.TryRemove(Context.ConnectionId, out _);
+        }
         await base.OnDisconnectedAsync(exception);
     }
     
     // Get location from deliverer
-    // public async Task GetDelivererLocation(string delivererUsername, double latitude, double longitude)
-    // {
-    //     Console.WriteLine("Deliverer location update: " + delivererUsername + " - " + latitude + ", " + longitude);
-    //     if (Connections.TryGetValue(delivererUsername, out var connectionId))
-    //     {
-    //         await Clients.Client(connectionId).SendAsync("ReceiveLocationUpdate", Context.User?.Identity?.Name, latitude, longitude);
-    //     }
-    // }
+    public async Task GetDelivererLocation(string delivererUsername, double latitude, double longitude)
+    {
+        Console.WriteLine("Deliverer location update: " + delivererUsername + " - " + latitude + ", " + longitude);
+        if (Connections.TryGetValue(delivererUsername, out var connectionId))
+        {
+            await Clients.Client(connectionId).SendAsync("ReceiveLocationUpdate", Context.User?.Identity?.Name, latitude, longitude);
+        }
+    }
 
     // Send location to user
     // public async Task RespondWithLocation(string requestedConnectionId, string latitude, string longitude)
