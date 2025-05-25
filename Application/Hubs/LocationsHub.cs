@@ -25,29 +25,29 @@ public class LocationsHub : Hub
     // Disconnect from the hub
     public override async Task OnDisconnectedAsync(Exception? exception)
     {
-        Console.WriteLine("Disconnected connection");
-        var username = Context.User?.Identity?.Name;
-        if (username != null)
-        {
-            Connections.TryRemove(Context.ConnectionId, out _);
-        }
-        Console.WriteLine("Disconnected user: " + username);
+        // Console.WriteLine("Disconnected connection");
+        // var username = Context.User?.Identity?.Name;
+        // if (username != null)
+        // {
+        //     Connections.TryRemove(Context.ConnectionId, out _);
+        // }
+        // Console.WriteLine("Disconnected user: " + username);
         await base.OnDisconnectedAsync(exception);
     }
     
     // Get location from deliverer
-    public async Task GetDelivererLocation(string delivererUsername, double latitude, double longitude)
-    {
-        Console.WriteLine("Deliverer location update: " + delivererUsername + " - " + latitude + ", " + longitude);
-        if (Connections.TryGetValue(delivererUsername, out var connectionId))
-        {
-            await Clients.Client(connectionId).SendAsync("ReceiveLocationUpdate", Context.User?.Identity?.Name, latitude, longitude);
-        }
-    }
+    // public async Task GetDelivererLocation(string delivererUsername, double latitude, double longitude)
+    // {
+    //     Console.WriteLine("Deliverer location update: " + delivererUsername + " - " + latitude + ", " + longitude);
+    //     if (Connections.TryGetValue(delivererUsername, out var connectionId))
+    //     {
+    //         await Clients.Client(connectionId).SendAsync("ReceiveLocationUpdate", Context.User?.Identity?.Name, latitude, longitude);
+    //     }
+    // }
 
     // Send location to user
-    public async Task RespondWithLocation(string requestedConnectionId, string latitude, string longitude)
-    {
-        await Clients.Client(requestedConnectionId).SendAsync("ReceiveLocationUpdate", Context.User?.Identity?.Name, latitude, longitude);
-    }
+    // public async Task RespondWithLocation(string requestedConnectionId, string latitude, string longitude)
+    // {
+    //     await Clients.Client(requestedConnectionId).SendAsync("ReceiveLocationUpdate", Context.User?.Identity?.Name, latitude, longitude);
+    // }
 }
