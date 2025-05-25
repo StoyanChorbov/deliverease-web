@@ -44,8 +44,7 @@ public class Program
                 policyBuilder
                     .WithOrigins(
                         "http://localhost",
-                        "https://schorbov.eu",
-                        "https://gourav-d.github.io"
+                        "https://schorbov.eu"
                     )
                     .AllowAnyHeader()
                     .AllowAnyMethod()
