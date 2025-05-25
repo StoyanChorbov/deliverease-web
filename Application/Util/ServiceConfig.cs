@@ -81,14 +81,14 @@ public static class ServiceConfig
         {
             OnMessageReceived = context =>
             {
-                var accessToken = context.Request.Query["access_token"];
-                Console.WriteLine(accessToken);
-                Console.WriteLine(context.Token);
-
-                var path = context.HttpContext.Request.Path;
-                if (string.IsNullOrEmpty(accessToken) || path.Value == null || !path.Value.Contains("/hubs/location"))
-                    return Task.CompletedTask;
-                context.Token = accessToken;
+                // var accessToken = context.Request.Query["access_token"];
+                // Console.WriteLine(accessToken);
+                // Console.WriteLine(context.Token);
+                //
+                // var path = context.HttpContext.Request.Path;
+                // if (string.IsNullOrEmpty(accessToken) || path.Value == null || !path.Value.Contains("/hubs/location"))
+                //     return Task.CompletedTask;
+                // context.Token = accessToken;
 
                 return Task.CompletedTask;
             }
