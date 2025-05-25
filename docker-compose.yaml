@@ -42,7 +42,7 @@ services:
       - "traefik.http.middlewares.strip-api-path.stripprefix.prefixes=/api"
       - "traefik.http.middlewares.websocket-headers.headers.customrequestheaders.Connection=upgrade"
       - "traefik.http.middlewares.websocket-headers.headers.customrequestheaders.Upgrade=websocket"
-      - "traefik.http.routers.backend.headers.customrequestheaders.X-Forwarded-Proto=https"
+#      - "traefik.http.routers.backend.headers.customrequestheaders.X-Forwarded-Proto=https"
       - "traefik.http.routers.backend.middlewares=strip-api-path,websocket-headers"
     depends_on:
       postgres_db:
