@@ -45,8 +45,8 @@ public class LocationsHub : Hub
     }
 
     // Send location to user
-    // public async Task RespondWithLocation(string requestedConnectionId, string latitude, string longitude)
-    // {
-    //     await Clients.Client(requestedConnectionId).SendAsync("ReceiveLocationUpdate", Context.User?.Identity?.Name, latitude, longitude);
-    // }
+    public async Task RespondWithLocation(string requestedConnectionId, string latitude, string longitude)
+    {
+        await Clients.Client(requestedConnectionId).SendAsync("ReceiveLocationUpdate", Context.User?.Identity?.Name, latitude, longitude);
+    }
 }
