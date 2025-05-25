@@ -40,10 +40,10 @@ services:
       - "traefik.http.routers.backend.tls.certresolver=letsencrypt"
       - "traefik.http.services.backend.loadbalancer.server.port=5000"
       - "traefik.http.middlewares.strip-api-path.stripprefix.prefixes=/api"
-      - "traefik.http.middlewares.websocket-headers.headers.customrequestheaders.Connection=upgrade"
-      - "traefik.http.middlewares.websocket-headers.headers.customrequestheaders.Upgrade=websocket"
+#      - "traefik.http.middlewares.websocket-headers.headers.customrequestheaders.Connection=upgrade"
+#      - "traefik.http.middlewares.websocket-headers.headers.customrequestheaders.Upgrade=websocket"
 #      - "traefik.http.routers.backend.headers.customrequestheaders.X-Forwarded-Proto=https"
-      - "traefik.http.routers.backend.middlewares=strip-api-path,websocket-headers"
+      - "traefik.http.routers.backend.middlewares=strip-api-path"
     depends_on:
       postgres_db:
         condition: service_healthy
