@@ -13,12 +13,12 @@ public class LocationsHub : Hub
     public override async Task OnConnectedAsync()
     {
         Console.WriteLine("New connection");
-        // var username = Context.User?.Identity?.Name;
-        // if (username != null)
-        // {
-        //     Connections[Context.ConnectionId] = username;
-        //     Console.WriteLine("Connected user: " + username);
-        // }
+        var username = Context.User?.Identity?.Name;
+        if (username != null)
+        {
+            Connections[Context.ConnectionId] = username;
+            Console.WriteLine("Connected user: " + username);
+        }
         await base.OnConnectedAsync();
     }
     
