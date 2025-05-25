@@ -12,10 +12,12 @@ public class LocationsHub : Hub
     // Connect to the hub
     public override async Task OnConnectedAsync()
     {
+        Console.WriteLine("New connection");
         var username = Context.User?.Identity?.Name;
         if (username != null)
         {
             Connections[Context.ConnectionId] = username;
+            Console.WriteLine("Connected user: " + username);
         }
         await base.OnConnectedAsync();
     }
@@ -23,20 +25,23 @@ public class LocationsHub : Hub
     // Disconnect from the hub
     public override async Task OnDisconnectedAsync(Exception? exception)
     {
+        Console.WriteLine("Disconnected connection");
         var username = Context.User?.Identity?.Name;
         if (username != null)
         {
             Connections.TryRemove(Context.ConnectionId, out _);
         }
+        Console.WriteLine("Disconnected user: " + username);
         await base.OnDisconnectedAsync(exception);
     }
     
     // Get location from deliverer
-    public async Task GetDelivererLocation(string delivererUsername)
+    public async Task GetDelivererLocation(string delivererUsername, double latitude, double longitude)
     {
+        Console.WriteLine("Deliverer location update: " + delivererUsername + " - " + latitude + ", " + longitude);
         if (Connections.TryGetValue(delivererUsername, out var connectionId))
         {
-            await Clients.Client(connectionId).SendAsync("ReceiveLocationUpdate");
+            await Clients.Client(connectionId).SendAsync("ReceiveLocationUpdate", Context.User?.Identity?.Name, latitude, longitude);
         }
     }
 
