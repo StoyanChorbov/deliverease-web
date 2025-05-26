@@ -7,6 +7,7 @@ namespace Application.Hubs;
 public class LocationsHub : Hub
 {
     // All current connections
+    // Key: Username, Value: ConnectionId
     private static readonly ConcurrentDictionary<string, string> Connections = new();
     
     // Connect to the hub
@@ -16,7 +17,7 @@ public class LocationsHub : Hub
         var username = Context.User?.Identity?.Name;
         if (username != null)
         {
-            Connections[Context.ConnectionId] = username;
+            Connections[username] = Context.ConnectionId;
             Console.WriteLine("Connected user: " + username);
         }
         await base.OnConnectedAsync();
@@ -29,24 +30,31 @@ public class LocationsHub : Hub
         var username = Context.User?.Identity?.Name;
         if (username != null)
         {
-            Connections.TryRemove(Context.ConnectionId, out _);
+            Connections.TryRemove(username, out _);
         }
         await base.OnDisconnectedAsync(exception);
     }
     
-    // Get location from deliverer
-    public async Task GetDelivererLocation(string delivererUsername, double latitude, double longitude)
+    // Request location from deliverer
+    public async Task RequestDelivererLocation(string delivererUsername)
     {
-        Console.WriteLine("Deliverer location update: " + delivererUsername + " - " + latitude + ", " + longitude);
         if (Connections.TryGetValue(delivererUsername, out var connectionId))
         {
-            await Clients.Client(connectionId).SendAsync("ReceiveLocationUpdate", Context.User?.Identity?.Name, latitude, longitude);
+            // Send request with username of the location recipient
+            await Clients.Client(connectionId).SendAsync("RequestLocationUpdate", Context.User?.Identity?.Name);
+        }
+        else
+        {
+            await Clients.Caller.SendAsync("DelivererNotConnected", delivererUsername);
         }
     }
-
-    // Send location to user
-    public async Task RespondWithLocation(string requestedConnectionId, string latitude, string longitude)
+    
+    // Send the location update to the recipient
+    public async Task ReceiveLocationUpdate(string recipient, double latitude, double longitude)
     {
-        await Clients.Client(requestedConnectionId).SendAsync("ReceiveLocationUpdate", Context.User?.Identity?.Name, latitude, longitude);
+        if (Connections.TryGetValue(recipient, out var connectionId))
+        {
+            await Clients.Client(connectionId).SendAsync("UpdateDelivererLocation", latitude, longitude);
+        }
     }
 }
