@@ -55,7 +55,9 @@ public class DeliveryRepository(DelivereaseDbContext context)
             .Where(d =>
                 d.DelivererId == null &&
                 d.StartingLocationRegion == startingLocationRegion &&
-                d.EndingLocationRegion == endingLocationRegion)
+                d.EndingLocationRegion == endingLocationRegion &&
+                d.DeliveryDate == null
+            )
             .Take(15)
             .ToListAsync();
 
@@ -66,14 +68,14 @@ public class DeliveryRepository(DelivereaseDbContext context)
         await _deliveries
             .Include(d => d.StartingLocation)
             .Include(d => d.EndingLocation)
-            .Where(d => d.Deliverer != null && d.Deliverer.UserName == username)
+            .Where(d => d.Deliverer != null && d.Deliverer.UserName == username && d.DeliveryDate == null)
             .ToListAsync();
-    
+
     public async Task<List<Delivery>> GetAllToReceive(string username) =>
         await _deliveries
             .Include(d => d.StartingLocation)
             .Include(d => d.EndingLocation)
-            .Where(d => d.Recipients.Any(r => r.UserName == username))
+            .Where(d => d.Recipients.Any(r => r.UserName == username) && d.DeliveryDate == null)
             .ToListAsync();
 
     public async Task UpdateAsync(Delivery delivery)
@@ -123,6 +125,19 @@ public class DeliveryRepository(DelivereaseDbContext context)
             throw new ArgumentException("Delivery not found");
 
         delivery.Deliverer = user;
+        await context.SaveChangesAsync();
+    }
+
+    public async Task MarkDeliveryAsCompleted(Guid deliveryId)
+    {
+        var delivery = await _deliveries
+            .Include(d => d.Deliverer)
+            .FirstOrDefaultAsync(d => d.Id == deliveryId);
+
+        if (delivery == null)
+            throw new ArgumentException("Delivery not found");
+
+        delivery.DeliveryDate = DateTime.UtcNow;
         await context.SaveChangesAsync();
     }
 }

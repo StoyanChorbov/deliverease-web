@@ -192,4 +192,9 @@ public class DeliveryService(
             delivery.Category.ToString(),
             delivery.IsFragile
         );
+
+    public async Task MarkDeliveryAsCompletedAsync(string deliveryId)
+    {
+        await deliveryRepository.MarkDeliveryAsCompleted(Guid.Parse(deliveryId));
+    }
 }

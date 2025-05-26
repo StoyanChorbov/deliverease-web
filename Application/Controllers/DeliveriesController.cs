@@ -80,7 +80,7 @@ public class DeliveriesController(DeliveryService deliveryService) : ControllerB
     
     [HttpPost("deliver")]
     [Authorize]
-    public async Task<IActionResult> SetDeliveryDeliverer([FromBody] DeliveryDelivererRequestDto request)
+    public async Task<IActionResult> SetDeliveryDeliverer([FromBody] DeliveryRequestDto request)
     {
         var username = User.Identity?.Name;
         if (username == null)
@@ -91,11 +91,23 @@ public class DeliveriesController(DeliveryService deliveryService) : ControllerB
     }
 
     // Update the delivery using id and dto
-    [HttpPatch("{id:guid}")]
+    [HttpPut("{id:guid}")]
     [Authorize]
     public async Task<IActionResult> UpdateDelivery([FromRoute] Guid id, [FromBody] DeliveryDto deliveryDto)
     {
         await deliveryService.UpdateDeliveryAsync(id, deliveryDto);
+        return Ok();
+    }
+    
+    [HttpPut("completed")]
+    [Authorize]
+    public async Task<IActionResult> MarkDeliveryAsCompleted([FromBody] DeliveryRequestDto request)
+    {
+        var username = User.Identity?.Name;
+        if (username == null)
+            return Unauthorized();
+
+        await deliveryService.MarkDeliveryAsCompletedAsync(request.DeliveryId);
         return Ok();
     }
 

@@ -31,14 +31,14 @@ jobs:
           platforms: linux/amd64
           push: true
           tags: ${{ env.REGISTRY }}/${{ env.BACKEND_IMAGE_NAME }}:latest
-#      - name: Build nuxt image and push to registry
-#        uses: docker/build-push-action@v4
-#        with:
-#          context: .
-#          file: View/Dockerfile
-#          platforms: linux/amd64
-#          push: true
-#          tags: ${{ env.REGISTRY }}/${{ env.NUXT_IMAGE_NAME }}:latest
+      - name: Build nuxt image and push to registry
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          file: View/Dockerfile
+          platforms: linux/amd64
+          push: true
+          tags: ${{ env.REGISTRY }}/${{ env.NUXT_IMAGE_NAME }}:latest
       - name: Deploy to Coolify
         run: |
           curl --request GET '${{ secrets.COOLIFY_WEBHOOK }}' --header 'Authorization: Bearer ${{ secrets.COOLIFY_TOKEN }}'
