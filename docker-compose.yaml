@@ -53,9 +53,11 @@ services:
 #      - "3000:3000"
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.frontend.rule=Host(`schorbov.eu`) && PathPrefix(`/`) && PathPrefixStrip(`/api`, negate=true)"
+      - "traefik.http.routers.frontend.rule=Host(`schorbov.eu`) && PathPrefix(`/web`)"
       - "traefik.http.routers.backend.tls.certresolver=letsencrypt"
       - "traefik.http.services.backend.loadbalancer.server.port=3000"
+      - "traefik.http.middlewares.strip-web-path.stripprefix.prefixes=/web"
+      - "traefik.http.routers.backend.middlewares=strip-web-path"
     depends_on:
       - application
     networks:
