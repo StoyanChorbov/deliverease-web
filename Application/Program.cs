@@ -45,7 +45,7 @@ public class Program
                     .WithOrigins(
                         "http://localhost",
                         "http://localhost:3000",
-                        "https://deliverease-web-git-deploy-stoyans-projects-cafee331.vercel.app/login",
+                        "https://deliverease-web-git-deploy-stoyans-projects-cafee331.vercel.app/",
                         "https://schorbov.eu"
                     )
                     .AllowAnyHeader()
