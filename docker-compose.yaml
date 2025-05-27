@@ -37,7 +37,7 @@ services:
       - "traefik.http.routers.backend.tls.certresolver=letsencrypt"
       - "traefik.http.services.backend.loadbalancer.server.port=5000"
       - "traefik.http.middlewares.strip-api-path.stripprefix.prefixes=/api"
-      - "traefik.http.routers.backend.middlewares=strip-api-path,websocket-headers"
+      - "traefik.http.routers.backend.middlewares=strip-api-path"
     depends_on:
       postgres_db:
         condition: service_healthy
@@ -49,8 +49,13 @@ services:
     container_name: web_view
     image: ghcr.io/stoyanchorbov/deliverease-nuxt:latest
     pull_policy: always
-    ports:
-      - "3000:3000"
+#    ports:
+#      - "3000:3000"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.backend.rule=Host(`schorbov.eu`)"
+      - "traefik.http.routers.backend.tls.certresolver=letsencrypt"
+      - "traefik.http.services.backend.loadbalancer.server.port=3000"
     depends_on:
       - application
     networks:
