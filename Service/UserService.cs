@@ -16,11 +16,13 @@ public class UserService(
     UserManager<User> userManager,
     IConfiguration configuration)
 {
+    // Get userDto by username
     public async Task<UserDto> GetAsync(string username)
     {
         return ToDto(await GetUserByUsernameAsync(username));
     }
 
+    // Get user entity by username
     public async Task<User> GetUserByUsernameAsync(string username)
     {
         var normalizedUsername = userManager.NormalizeName(username);
@@ -32,6 +34,7 @@ public class UserService(
         return user;
     }
 
+    // Get all users by usernames
     public async Task<List<User>> GetAllByUsernamesAsync(List<string> usernames)
     {
         return await userRepository.GetAllByUsernamesAsync(
@@ -46,6 +49,7 @@ public class UserService(
         return await userRepository.GetByJwtTokenAsync(token);
     }
 
+    // Login a user and return the JWT token and refresh token
     public async Task<Tuple<string?, string?>?> LoginAsync(UserLoginDto userLoginDto)
     {
         var password = userLoginDto.Password;
@@ -76,6 +80,7 @@ public class UserService(
         );
     }
 
+    // Refresh the JWT token using the refresh token
     public async Task<Tuple<string?, string?>?> RefreshAsync(string refreshToken)
     {
         var existingToken = await tokenRepository.GetByRefreshTokenAsync(refreshToken);
@@ -110,11 +115,13 @@ public class UserService(
         );
     }
 
+    // Get all users
     public async Task<List<UserDto>> GetAllAsync()
     {
         return (await userRepository.GetAllAsync()).Select(ToDto).ToList();
     }
 
+    // Register a new user
     public async Task RegisterAsync(UserRegisterDto user)
     {
         var existingUser = await userManager.FindByNameAsync(user.Username);
@@ -142,6 +149,7 @@ public class UserService(
         await userManager.AddToRoleAsync(newUser, UserRoles.User);
     }
 
+    // Update an existing user
     public async Task<UserDto?> UpdateAsync(UserDto user)
     {
         var existingUser = await userManager.FindByNameAsync(user.Username);
@@ -154,6 +162,7 @@ public class UserService(
         return updateResult.Succeeded ? ToDto(existingUser) : null;
     }
 
+    // Delete a user by username
     public async Task DeleteAsync(string username)
     {
         var normalizedUserName = userManager.NormalizeName(username);
@@ -193,6 +202,7 @@ public class UserService(
             user.IsDeliveryPerson);
     }
 
+    // Generate a JWT token with claims
     private JwtSecurityToken GenerateAuthToken(List<Claim> claims)
     {
         var secretKey = configuration["JWT:Secret"] ?? throw new Exception("Secret key not found");
@@ -206,6 +216,7 @@ public class UserService(
         return token;
     }
 
+    // Get the JWT token for a user
     private async Task<JwtSecurityToken> GetAuthToken(User user)
     {
         var claims = new List<Claim>
@@ -220,12 +231,14 @@ public class UserService(
         return GenerateAuthToken(claims);
     }
 
+    // Generate a refresh token with an expiry date
     private static Tuple<string, DateTime> GenerateRefreshToken() =>
         new(
             Guid.NewGuid().ToString(),
             DateTime.UtcNow.AddDays(7)
         );
 
+    // Logout a user by removing their token
     public async Task LogoutAsync(string username)
     {
         var user = await userManager.FindByNameAsync(username);

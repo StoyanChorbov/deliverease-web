@@ -79,6 +79,7 @@ public class DeliveriesController(DeliveryService deliveryService) : ControllerB
         });
     }
     
+    // Set the deliverer for a delivery
     [HttpPost("deliver")]
     [Authorize]
     public async Task<IActionResult> SetDeliveryDeliverer([FromBody] DeliveryRequestDto request)
@@ -100,6 +101,7 @@ public class DeliveriesController(DeliveryService deliveryService) : ControllerB
         return Ok();
     }
     
+    // Mark the delivery as completed
     [HttpPut("completed")]
     [Authorize]
     public async Task<IActionResult> MarkDeliveryAsCompleted([FromBody] DeliveryRequestDto request)

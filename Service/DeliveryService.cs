@@ -11,6 +11,7 @@ public class DeliveryService(
     LocationService locationService,
     UserService userService)
 {
+    // Add a new delivery to the database
     public async Task<string> AddDeliveryAsync(DeliveryAddDto deliveryAddDto, string username)
     {
         var startLocation = await locationService.AddLocationAsync(deliveryAddDto.StartLocation);
@@ -35,17 +36,20 @@ public class DeliveryService(
         return delivery.Id.ToString();
     }
 
+    // Get delivery by id
     public async Task<DeliveryDto> GetDeliveryAsync(Guid id)
     {
         return ToDto(await deliveryRepository.GetAsync(id));
     }
 
+    // Get all deliveries
     public async Task<List<FindableDeliveryDto>> GetAllDeliveriesAsync()
     {
         var deliveries = await deliveryRepository.GetAllAsync();
         return deliveries.Select(ToFindableDto).ToList();
     }
 
+    // Get the deliveries that have been created by the logged-in user
     public async Task<List<UserDeliveryDto>> GetPastDeliveriesAsync(string username)
     {
         var pastDeliveries = await deliveryRepository.GetPastDeliveriesAsync(username);
@@ -54,6 +58,7 @@ public class DeliveryService(
             .ToList();
     }
 
+    // Get deliveries by starting and ending location
     public async Task<List<DeliveryListDto>> GetAllByStartingAndEndingLocation(string startingLocationRegion,
         string endingLocationRegion, string username)
     {
@@ -63,6 +68,7 @@ public class DeliveryService(
             .ToList();
     }
 
+    // Get packages to be delivered by the user and to be received by the user
     public async Task<Tuple<List<DeliveryListDto>, List<DeliveryListDto>>> GetCurrentDeliveriesAsync(string username)
     {
         var toDeliver = await deliveryRepository.GetAllToDeliver(username);
@@ -74,12 +80,14 @@ public class DeliveryService(
         );
     }
 
+    // Set the deliverer for a delivery
     public async Task SetDeliveryDelivererAsync(string deliveryId, string username)
     {
         var user = await userService.GetUserByUsernameAsync(username);
         await deliveryRepository.SetDeliveryDelivererAsync(deliveryId, user);
     }
 
+    // Update the delivery using id and dto
     public async Task UpdateDeliveryAsync(Guid id, DeliveryDto deliveryDto)
     {
         var delivery = await deliveryRepository.GetAsync(id);
@@ -96,11 +104,13 @@ public class DeliveryService(
         await deliveryRepository.UpdateAsync(delivery);
     }
 
+    // Delete the delivery using id
     public async Task DeleteDeliveryAsync(Guid id)
     {
         await deliveryRepository.DeleteAsync(id);
     }
 
+    // Convert Delivery to DeliveryDto
     private static DeliveryDto ToDto(Delivery delivery)
     {
         return new DeliveryDto(
@@ -135,6 +145,13 @@ public class DeliveryService(
         );
     }
 
+    // Mark delivery as completed
+    public async Task MarkDeliveryAsCompletedAsync(string deliveryId)
+    {
+        await deliveryRepository.MarkDeliveryAsCompleted(Guid.Parse(deliveryId));
+    }
+
+    // Convert Delivery to FindableDeliveryDto
     private static FindableDeliveryDto ToFindableDto(Delivery delivery) =>
         new(
             delivery.Id.ToString(),
@@ -159,6 +176,7 @@ public class DeliveryService(
             delivery.IsFragile
         );
 
+    // Convert Delivery to UserDeliveryDto
     private static UserDeliveryDto ToUserDeliveryDto(Delivery delivery) =>
         new(
             delivery.Id.ToString(),
@@ -169,6 +187,7 @@ public class DeliveryService(
             delivery.IsFragile
         );
 
+    // Convert Delivery to DeliveryListDto
     private static DeliveryListDto ToDeliveryListDto(Delivery delivery) =>
         new(
             delivery.Id.ToString(),
@@ -192,9 +211,4 @@ public class DeliveryService(
             delivery.Category.ToString(),
             delivery.IsFragile
         );
-
-    public async Task MarkDeliveryAsCompletedAsync(string deliveryId)
-    {
-        await deliveryRepository.MarkDeliveryAsCompleted(Guid.Parse(deliveryId));
-    }
 }
