@@ -44,6 +44,7 @@ public class Program
                 policyBuilder
                     .WithOrigins(
                         "http://localhost",
+                        "http://localhost:3000",
                         "https://schorbov.eu"
                     )
                     .AllowAnyHeader()
