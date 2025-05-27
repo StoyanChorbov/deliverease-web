@@ -10,6 +10,7 @@ COPY ["Model/Model.csproj", "Model/"]
 COPY ["Repository/Repository.csproj", "Repository/"]
 COPY ["Service/Service.csproj", "Service/"]
 COPY ["Application/Application.csproj", "Application/"]
+COPY ["Testing/Testing.csproj", "Testing/"]
 RUN dotnet restore
 COPY . .
 WORKDIR "/src/Application"
