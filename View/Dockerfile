@@ -15,13 +15,15 @@ RUN pnpm i
 # Copy and build the application
 COPY View/. ./
 RUN pnpm run build
+RUN if [ -d .output/public]
 
 # Copy the compiled application to a new image
 FROM node:${NODE_VERSION}-alpine
 WORKDIR /app
-COPY --from=build /app/.output ./
+COPY --from=build /app/.output ./.output
 
 # Build the application
+ENV NODE_ENV=production
 ENV HOST=0.0.0.0
 ENV PORT=3000
 
