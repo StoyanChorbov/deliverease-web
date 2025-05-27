@@ -45,7 +45,7 @@ public class DeliveryRepository(DelivereaseDbContext context)
     }
 
     public async Task<List<Delivery>> GetAllByStartingAndEndingLocation(string startingLocationRegion,
-        string endingLocationRegion)
+        string endingLocationRegion, string username)
     {
         var deliveries = await _deliveries
             .Include(d => d.StartingLocation)
@@ -54,6 +54,7 @@ public class DeliveryRepository(DelivereaseDbContext context)
             .Include(d => d.Recipients)
             .Where(d =>
                 d.DelivererId == null &&
+                d.Sender.UserName != username && d.Recipients.All(r => r.UserName != username) &&
                 d.StartingLocationRegion == startingLocationRegion &&
                 d.EndingLocationRegion == endingLocationRegion &&
                 d.DeliveryDate == null

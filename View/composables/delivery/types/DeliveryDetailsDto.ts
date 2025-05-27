@@ -5,8 +5,8 @@ export interface DeliveryDetailsDto {
     name: string;
     category: string;
     description: string;
-    startLocation: LocationDto;
-    endLocation: LocationDto;
+    startingLocation: LocationDto;
+    endingLocation: LocationDto;
     sender: string;
     deliverer?: string;
     recipients: string[];

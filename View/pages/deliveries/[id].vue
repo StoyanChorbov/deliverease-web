@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { DeliveryDetailsDto } from '~/composables/delivery/types/DeliveryDetailsDto';
 import { useApi, useAuth } from '#build/imports';
+import type { MapMarker } from '~/composables/delivery/types/MapMarker';
 
 const route = useRoute();
 const id = route.params.id;
@@ -9,6 +10,7 @@ const router = useRouter();
 const auth = useAuth();
 
 const delivery = ref<DeliveryDetailsDto>();
+const markers = ref<MapMarker[]>([]);
 
 const handleDeliverPackage = async () => {
 	await useApi(`/deliveries/deliver`, {
@@ -19,7 +21,7 @@ const handleDeliverPackage = async () => {
 			router.push('/');
 		})
 		.catch((error) => {
-			throw new Error('Error creating delivery: ', error);
+			throw new Error('Error getting delivery: ', error.message);
 		});
 };
 
@@ -37,9 +39,21 @@ const handleLoad = async (id: string) => {
 	const res = await useApi<DeliveryDetailsDto>(`/deliveries/${id}`)
 		.then((res) => {
 			delivery.value = res;
+			markers.value = [
+				{
+					lat: delivery.value.startingLocation.latitude,
+					lng: delivery.value.startingLocation.longitude,
+					label: 'Start',
+				},
+				{
+					lat: res.endingLocation.latitude,
+					lng: res.endingLocation.longitude,
+					label: 'End',
+				},
+			];
 		})
 		.catch((error) => {
-			throw new Error('Error creating delivery: ', error);
+			throw new Error('Error getting delivery: ', error.message);
 		});
 };
 
@@ -50,7 +64,7 @@ onMounted(async () => {
 
 <template>
 	<v-container>
-		<LazyMapWithMarkers />
+		<LazyMapWithMarkers :markers="markers" />
 		<v-col>
 			<v-card>
 				<v-card-title>Delivery Details</v-card-title>

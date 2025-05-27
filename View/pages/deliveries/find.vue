@@ -38,7 +38,6 @@ const getDeliveries = async () => {
 	) {
 		await useApi<DeliveryRowDto[]>(`/deliveries/options/${selectedStartingLocation.value.region}/${selectedEndingLocation.value.region}`)
 			.then((res) => {
-                console.log(res);
 				deliveries.value = res;
 			})
 			.catch((err) => {

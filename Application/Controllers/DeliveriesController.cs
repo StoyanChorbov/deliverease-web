@@ -55,8 +55,9 @@ public class DeliveriesController(DeliveryService deliveryService) : ControllerB
     public async Task<ActionResult<List<DeliveryListDto>>> GetDeliveriesByLocations(
         string startingLocationRegion, string endingLocationRegion)
     {
+        var username = User.Identity?.Name;
         var deliveries =
-            await deliveryService.GetAllByStartingAndEndingLocation(startingLocationRegion, endingLocationRegion);
+            await deliveryService.GetAllByStartingAndEndingLocation(startingLocationRegion, endingLocationRegion, username);
         return Ok(deliveries);
     }
     

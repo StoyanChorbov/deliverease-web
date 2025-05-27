@@ -1,22 +1,18 @@
 <script setup lang="ts">
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
+import type { MapMarker } from '~/composables/delivery/types/MapMarker';
 
-interface MapMarker {
-    lng: number;
-    lat: number;
-    label: string;
+interface MapProps {
+    markers: MapMarker[];
 }
+
+const props = defineProps<MapProps>();
 
 const runtimeConfig = useRuntimeConfig();
 mapboxgl.accessToken = runtimeConfig.public.mapboxKey;
 
 const mapContainer = ref<HTMLDivElement | null>(null);
-
-const markers: MapMarker[] = [
-    {lng: 0, lat: 0, label: "Center"},
-    {lng: 22, lat: 15, label: "Random place"},
-];
 
 onMounted(() => {
     if (!mapContainer.value) return;
@@ -24,19 +20,17 @@ onMounted(() => {
     const map = new mapboxgl.Map({
         container: mapContainer.value,
         style: 'mapbox://styles/mapbox/streets-v12',
-        center: [11, 7.5],
-        zoom: 2,
+        center: [25.257042080629198, 42.51415543970986],
+        zoom: 5,
     });
 
     map.on("load", () => {
         map.resize();
 
-        markers.forEach(({lng, lat, label}) => {
-            const popup = new mapboxgl.Popup({offset: 0}).setText(label);
-
+        props.markers.forEach(({lng, lat, label}) => {
+            console.log(`Adding marker at ${lng}, ${lat} with label: ${label}`);
             new mapboxgl.Marker()
                 .setLngLat([lng, lat])
-                // .setPopup(popup)
                 .addTo(map);
         })
     })

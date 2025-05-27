@@ -55,10 +55,10 @@ public class DeliveryService(
     }
 
     public async Task<List<DeliveryListDto>> GetAllByStartingAndEndingLocation(string startingLocationRegion,
-        string endingLocationRegion)
+        string endingLocationRegion, string username)
     {
         return (await deliveryRepository.GetAllByStartingAndEndingLocation(startingLocationRegion,
-                endingLocationRegion))
+                endingLocationRegion, username))
             .Select(ToDeliveryListDto)
             .ToList();
     }
