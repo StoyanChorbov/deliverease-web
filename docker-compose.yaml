@@ -42,21 +42,21 @@ services:
       - backend
       - web_app
 
-  view:
-    container_name: web_view
-    image: ghcr.io/stoyanchorbov/deliverease-nuxt:latest
-    pull_policy: always
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.frontend.rule=Host(`schorbov.eu`) && PathPrefix(`/web`)"
-      - "traefik.http.routers.frontend.tls.certresolver=letsencrypt"
-      - "traefik.http.services.frontend.loadbalancer.server.port=3000"
-      - "traefik.http.middlewares.strip-web-path.stripprefix.prefixes=/web"
-      - "traefik.http.routers.frontend.middlewares=strip-web-path"
-    depends_on:
-      - application
-    networks:
-      - web_app
+#  view:
+#    container_name: web_view
+#    image: ghcr.io/stoyanchorbov/deliverease-nuxt:latest
+#    pull_policy: always
+#    labels:
+#      - "traefik.enable=true"
+#      - "traefik.http.routers.frontend.rule=Host(`schorbov.eu`) && PathPrefix(`/web`)"
+#      - "traefik.http.routers.frontend.tls.certresolver=letsencrypt"
+#      - "traefik.http.services.frontend.loadbalancer.server.port=3000"
+#      - "traefik.http.middlewares.strip-web-path.stripprefix.prefixes=/web"
+#      - "traefik.http.routers.frontend.middlewares=strip-web-path"
+#    depends_on:
+#      - application
+#    networks:
+#      - web_app
 
 networks:
   backend:
