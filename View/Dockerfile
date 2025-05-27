@@ -1,31 +1,34 @@
-# Use small image for smaller size
-ARG NODE_VERSION=22
-FROM node:${NODE_VERSION}-alpine AS build
+# Build Stage 1
 
-# Setup environment
-#ENV PNPM_HOME="/pnpm"
-#ENV PATH="${PNPM_HOME}:${PATH}"
+FROM node:22-alpine AS build
+WORKDIR /app
+
 RUN corepack enable
 
-# Copy package config files to the image and install dependencies
-WORKDIR /app
+# Copy package.json and your lockfile, here we add pnpm-lock.yaml for illustration
 COPY View/package.json View/pnpm-lock.yaml ./
+
+# Install dependencies
 RUN pnpm i
 
-# Copy and build the application
-COPY View/. ./
+# Copy the entire project
+COPY View ./
+
+# Build the project
 RUN pnpm run build
 
-# Copy the compiled application to a new image
-FROM node:${NODE_VERSION}-alpine
+# Build Stage 2
+
+FROM node:22-alpine
 WORKDIR /app
-COPY --from=build /app/.output ./.output
 
-# Build the application
-ENV NODE_ENV=production
-ENV HOST=0.0.0.0
+# Only `.output` folder is needed from the build stage
+COPY --from=build /app/.output/ ./
+
+# Change the port and host
 ENV PORT=3000
+ENV HOST=0.0.0.0
 
-# Start the application
 EXPOSE 3000
-CMD ["node", "/app/server/.output/index.mjs"]
+
+CMD ["node", "/app/server/index.mjs"]
