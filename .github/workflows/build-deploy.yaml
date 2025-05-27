@@ -1,44 +1,44 @@
-# For more details, read this: https://coolify.io/docs/github-actions
-name: Build Static Image
-on:
-  push:
-    branches: ["deploy"]
-env:
-  REGISTRY: ghcr.io
-  BACKEND_IMAGE_NAME: "stoyanchorbov/deliverease-backend"
-  NUXT_IMAGE_NAME: "stoyanchorbov/deliverease-nuxt"
-  
-
-jobs:
-  amd64:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
-    steps:
-      - uses: actions/checkout@v3
-      - name: Login to ghcr.io
-        uses: docker/login-action@v2
-        with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN  }}
-      - name: Build backend image and push to registry
-        uses: docker/build-push-action@v4 
-        with:
-          context: .
-          file: Application/Dockerfile
-          platforms: linux/amd64
-          push: true
-          tags: ${{ env.REGISTRY }}/${{ env.BACKEND_IMAGE_NAME }}:latest
-      - name: Build nuxt image and push to registry
-        uses: docker/build-push-action@v4
-        with:
-          context: .
-          file: View/Dockerfile
-          platforms: linux/amd64
-          push: true
-          tags: ${{ env.REGISTRY }}/${{ env.NUXT_IMAGE_NAME }}:latest
-      - name: Deploy to Coolify
-        run: |
-          curl --request GET '${{ secrets.COOLIFY_WEBHOOK }}' --header 'Authorization: Bearer ${{ secrets.COOLIFY_TOKEN }}'
+## For more details, read this: https://coolify.io/docs/github-actions
+#name: Build Static Image
+#on:
+#  push:
+#    branches: ["deploy"]
+#env:
+#  REGISTRY: ghcr.io
+#  BACKEND_IMAGE_NAME: "stoyanchorbov/deliverease-backend"
+#  NUXT_IMAGE_NAME: "stoyanchorbov/deliverease-nuxt"
+#  
+#
+#jobs:
+#  amd64:
+#    runs-on: ubuntu-latest
+#    permissions:
+#      contents: read
+#      packages: write
+#    steps:
+#      - uses: actions/checkout@v3
+#      - name: Login to ghcr.io
+#        uses: docker/login-action@v2
+#        with:
+#          registry: ${{ env.REGISTRY }}
+#          username: ${{ github.actor }}
+#          password: ${{ secrets.GITHUB_TOKEN  }}
+#      - name: Build backend image and push to registry
+#        uses: docker/build-push-action@v4 
+#        with:
+#          context: .
+#          file: Application/Dockerfile
+#          platforms: linux/amd64
+#          push: true
+#          tags: ${{ env.REGISTRY }}/${{ env.BACKEND_IMAGE_NAME }}:latest
+#      - name: Build nuxt image and push to registry
+#        uses: docker/build-push-action@v4
+#        with:
+#          context: .
+#          file: View/Dockerfile
+#          platforms: linux/amd64
+#          push: true
+#          tags: ${{ env.REGISTRY }}/${{ env.NUXT_IMAGE_NAME }}:latest
+#      - name: Deploy to Coolify
+#        run: |
+#          curl --request GET '${{ secrets.COOLIFY_WEBHOOK }}' --header 'Authorization: Bearer ${{ secrets.COOLIFY_TOKEN }}'
