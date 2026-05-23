@@ -32,8 +32,7 @@
       - DB_USER=deliverease_db_user
       - DB_PASS=deliverease_db_pass
     depends_on:
-      postgres_db:
-        condition: service_healthy
+      - postgres_db
     networks:
       - backend
       - web_app
