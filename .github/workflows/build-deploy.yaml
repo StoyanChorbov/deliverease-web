@@ -5,8 +5,8 @@ on:
     branches: ["deploy"]
 env:
   REGISTRY: ghcr.io
-  BACKEND_IMAGE_NAME: "stoyanchorbov/deliverease-backend"
-  NUXT_IMAGE_NAME: "stoyanchorbov/deliverease-nuxt"
+  BACKEND_IMAGE_NAME: "schorbov/deliverease-backend"
+  NUXT_IMAGE_NAME: "schorbov/deliverease-nuxt"
   
 
 jobs:
@@ -24,7 +24,7 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN  }}
       - name: Build backend image and push to registry
-        uses: docker/build-push-action@v4 
+        uses: docker/build-push-action@v4
         with:
           context: .
           file: Application/Dockerfile
@@ -33,6 +33,16 @@ jobs:
           tags: ${{ env.REGISTRY }}/${{ env.BACKEND_IMAGE_NAME }}:latest
       - name: Build nuxt image and push to registry
         uses: docker/build-push-action@v4
+        with:
+          context: .
+          file: View/Dockerfile
+          platforms: linux/amd64
+          push: true
+          tags: ${{ env.REGISTRY }}/${{ env.NUXT_IMAGE_NAME }}:latest
+      - name: Deploy to Coolify
+        run: | 
+         curl --request GET '${{ secrets.COOLIFY_WEBHOOK }}' --header 'Authorization: Bearer ${{ secrets.COOLIFY_TOKEN }}'
+
         with:
           context: .
           file: View/Dockerfile
