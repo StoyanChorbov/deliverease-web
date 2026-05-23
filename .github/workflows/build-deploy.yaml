@@ -34,7 +34,7 @@ jobs:
       - name: Build nuxt image and push to registry
         uses: docker/build-push-action@v4
         with:
-          context: .
+          context: View
           file: View/Dockerfile
           platforms: linux/amd64
           push: true
