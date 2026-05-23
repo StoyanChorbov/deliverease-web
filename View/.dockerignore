@@ -8,6 +8,7 @@
 **/.vs
 **/.vscode
 **/.idea
+**/.nuxt
 **/*.*proj.user
 **/*.dbmdl
 **/*.jfm

@@ -3,16 +3,15 @@
 FROM node:22-alpine AS build
 WORKDIR /app
 
-RUN corepack enable && corepack prepare pnpm@latest --activate
+RUN corepack enable && corepack prepare pnpm@11.2.2 --activate
 
 # Copy package.json and lockfile
-COPY ./package.json ./pnpm-lock.yaml ./
+COPY . ./
 
 # Install dependencies
-RUN pnpm install --reporter=verbose
+RUN pnpm install --frozen-lockfile
 
 # Copy the entire project
-COPY . ./
 
 # Build the project
 RUN pnpm run build
