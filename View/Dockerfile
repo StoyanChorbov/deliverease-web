@@ -3,13 +3,13 @@
 FROM node:22-alpine AS build
 WORKDIR /app
 
-RUN corepack enable
+RUN corepack enable && corepack prepare pnpm@latest --activate
 
 # Copy package.json and your lockfile, here we add pnpm-lock.yaml for illustration
 COPY View/package.json View/pnpm-lock.yaml ./
 
 # Install dependencies
-RUN pnpm i
+RUN pnpm install --frozen-lockfile
 
 # Copy the entire project
 COPY View ./
